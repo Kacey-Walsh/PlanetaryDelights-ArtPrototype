@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletController : MonoBehaviour
@@ -11,6 +9,8 @@ public class BulletController : MonoBehaviour
     public Vector3 target {get; set; }
     public bool hit {get; set; }
 
+     public bool weaponUpgrade1 = false;
+
     private void OnEnable()
     {
         // Once spawned destroy after 3 seconds if nothing is hit
@@ -20,6 +20,7 @@ public class BulletController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // If nothing is hit fly towards center screen then destroy
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
         if(!hit && Vector3.Distance(transform.position, target) < .01f)
         {
@@ -29,9 +30,11 @@ public class BulletController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // if object hit has tag "Enemy" do damage and destroy bullet
         if(collision.collider.tag == "Enemy")
         {
-            Destroy(collision.gameObject);
+            Debug.Log("Enemy damaged by bullet");
+            collision.gameObject.GetComponent<EnemyAI>().EnemyTakeDamage(1);
             Destroy(gameObject);
         }
     }
